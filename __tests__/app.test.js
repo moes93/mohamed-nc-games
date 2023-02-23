@@ -69,6 +69,7 @@ describe("GET /api/reviews/:review_id",()=>{
         .then(({ body }) => {
             const review = body.review;
               expect(review).toHaveProperty("review_id", expect.any(Number));
+              expect(review).toHaveProperty("review_body", expect.any(String));
               expect(review).toHaveProperty("title", expect.any(String));
               expect(review).toHaveProperty("designer", expect.any(String));
               expect(review).toHaveProperty("owner", expect.any(String));
