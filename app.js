@@ -7,7 +7,6 @@ const app = express();
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 
-// app.use(handle400Erros);
 
 app.use(handle500Errors);
 

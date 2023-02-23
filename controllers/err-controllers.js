@@ -1,8 +1,4 @@
 
-
-// const handle400Erros = (req, res, next) => {
-//     res.status(404).send({ msg: "incorrect endpoint" });
-//   };
   
 
 const handle500Errors = (error, req, res, next) => {

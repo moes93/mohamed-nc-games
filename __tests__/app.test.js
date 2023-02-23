@@ -34,14 +34,13 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         allReviews = body.reviews;
-        // console.log(allReviews)
         allReviews.forEach((review) => {
           expect(review).toHaveProperty("review_id", expect.any(Number));
           expect(review).toHaveProperty("title", expect.any(String));
           expect(review).toHaveProperty("designer", expect.any(String));
           expect(review).toHaveProperty("owner", expect.any(String));
           expect(review).toHaveProperty("review_img_url", expect.any(String));
-          expect(review).toHaveProperty("comment_count", expect.any(String));
+          expect(review).toHaveProperty("comment_count", expect.any(Number));
           expect(review).toHaveProperty("category", expect.any(String));
           expect(review).toHaveProperty("created_at", expect.any(String));
           expect(review).toHaveProperty("votes", expect.any(Number));
@@ -54,7 +53,6 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const reviewsArr = body.reviews;
-        console.log(reviewsArr)
         expect(body.reviews.length).toBe(13);
         expect(reviewsArr).toBeSortedBy('created_at', {descending:true}) 
       });
