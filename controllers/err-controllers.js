@@ -10,6 +10,8 @@ const handlePSQL400Erros = (err, req, res, next) => {
 const handleCustomErrors = (err, req, res, next) => {
   if (err.msg === "No review found") {
     res.status(err.status).send(err);
+  } else if (err.msg === "No comment related") {
+    res.status(err.status).send(err);
   } else {
     next(err);
   }
