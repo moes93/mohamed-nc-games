@@ -58,3 +58,40 @@ describe("GET /api/reviews", () => {
       });
   });
 });
+
+describe("GET /api/reviews/:review_id",()=>{
+    test("A review object, which should have the following properties: review_id,title,review_body,designer,review_img_url,votes, category, owner and created_at",()=>{
+        return request(app)
+        .get("/api/reviews/2")
+        .expect(200)
+        .then(({ body }) => {
+            const review = body.review;
+              expect(review).toHaveProperty("review_id", expect.any(Number));
+              expect(review).toHaveProperty("review_body", expect.any(String));
+              expect(review).toHaveProperty("title", expect.any(String));
+              expect(review).toHaveProperty("designer", expect.any(String));
+              expect(review).toHaveProperty("owner", expect.any(String));
+              expect(review).toHaveProperty("review_img_url", expect.any(String));
+              expect(review).toHaveProperty("category", expect.any(String));
+              expect(review).toHaveProperty("created_at", expect.any(String));
+              expect(review).toHaveProperty("votes", expect.any(Number));
+          });
+      });
+      test("when given a review_id that's too high, return an appropriate error", () => {
+		return request(app)
+			.get("/api/reviews/9999")
+			.expect(404)
+			.then(({body}) => {
+               
+				expect(body.msg).toBe("No review found");
+			});
+	});
+	test("when given an invalid review_id, return an appropriate error", () => {
+		return request(app)
+			.get("/api/reviews/banana")
+			.expect(400)
+			.then(({ body }) => {
+				expect(body.msg).toBe("ID must be a number");
+			});
+	});
+});

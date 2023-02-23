@@ -1,4 +1,4 @@
-const {fetchCategories, fetchReviews} = require("../models/model-game.js")
+const {fetchCategories, fetchReviews, fetchReviewById} = require("../models/model-game.js")
 
 
 const getCategories =(req,res,next)=>{
@@ -17,4 +17,16 @@ const getReviews = (req, res, next) =>{
     })
 }
 
-module.exports = {getCategories, getReviews}
+const getReviewById = (req, res, next) =>{
+    const reviewId = req.params.review_id
+    fetchReviewById(reviewId)
+
+    .then((review)=>{
+		res.status(200).send({ review });
+		})
+	.catch((err) => {
+		next(err);
+	});
+}
+
+module.exports = {getCategories, getReviews, getReviewById}
