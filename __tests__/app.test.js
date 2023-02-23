@@ -95,12 +95,4 @@ describe("GET /api/reviews/:review_id",()=>{
 				expect(body.msg).toBe("ID must be a number");
 			});
 	});
-	// test("returns a review response object that now also includes comment_count", () => {
-	// 	return request(app)
-	// 		.get("/api/reviews/2")
-	// 		.expect(200)
-	// 		.then(({ body }) => {
-	// 			expect(body.review).toHaveProperty("comment_count", 3);
-	// 		});
-	// });
 });
