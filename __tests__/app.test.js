@@ -117,4 +117,25 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(comment).toHaveProperty("votes", expect.any(Number));
       });
   });
+  test("if given a review_id that's too high, return an appropriate response", () => {
+    const postedComment = { username: "mohamed", body: "random words" };
+    return request(app)
+      .post("/api/reviews/1000/comments")
+      .send(postedComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Username Not Found");
+      });
+  });
+  // test("if given an invalid Id, return an appropriate response", () => {
+  //   const postedComment = { username: "Mohamed", body: "random words" };
+  //   return request(app)
+  //     .post("/api/reviews/banana/comments")
+  //     .send(postedComment)
+  //     .expect(400)
+  //     .then(({ body }) => {
+  //       console.log(body);
+  //       expect(body.msg).toBe("ID must be a number");
+  //     });
+  // });
 });

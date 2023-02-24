@@ -51,7 +51,7 @@ const fetchReviewById = (review_id) => {
 const postComment = (review_id, comment) => {
   const username = comment.username;
   const body = comment.body;
-
+// console.log(body)
   if (!username || !body) {
     return Promise.reject({
       status: 400,
@@ -62,7 +62,7 @@ const postComment = (review_id, comment) => {
     .query(`SELECT * from comments WHERE author=$1`, [username])
     .then(({ rows }) => {
 
-      if (rows[0] === undefined) {
+      if (rows.length === 0) {
         return Promise.reject({
           status: 404,
           msg: `Username Not Found`,

@@ -8,7 +8,12 @@ const handlePSQL400Erros = (err, req, res, next) => {
 };
 
 const handleCustomErrors = (err, req, res, next) => {
+  console.log(err);
   if (err.msg === "No review found") {
+    res.status(err.status).send(err);
+  } else if (err.msg === "Username Not Found") {
+    res.status(err.status).send(err);
+  } else if (err.msg === "Username Not Found") {
     res.status(err.status).send(err);
   } else {
     next(err);
