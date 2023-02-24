@@ -1,3 +1,17 @@
+
+const {fetchCategories} = require("../models/model-game.js")
+
+const getCategories =(req,res,next)=>{
+    fetchCategories().then((categories)=>{
+        res.status(200).send({categories})
+    })
+    .catch((err) => {
+        next(err)
+     })
+};
+
+module.exports = {getCategories}
+
 const {
   fetchCategories,
   fetchReviews,
@@ -63,3 +77,4 @@ module.exports = {
 
   getReviewsComments,
 };
+

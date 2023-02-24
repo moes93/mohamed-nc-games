@@ -1,5 +1,11 @@
 const express = require("express");
 
+const {getCategories} = require("./controllers/controller-game.js")
+const app = express();
+
+app.get("/api/categories", getCategories);
+
+
 const {getCategories, getReviews, getReviewById, postCommentByReviewId, getReviewsComments} = require("./controllers/controller-game.js")
 
 const {handle500Errors, handlePSQL400Erros, handleCustomErrors } = require("./controllers/err-controllers.js");
