@@ -101,6 +101,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(200)
       .then(({ body }) => {
         allcomments = body.comments;
+        expect(allcomments).toBeSortedBy("created_at", { descending: true });
         allcomments.forEach((comment) => {
           expect(comment).toHaveProperty("review_id", expect.any(Number));
           expect(comment).toHaveProperty("body", expect.any(String));
@@ -111,7 +112,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test("", () => {
+  test("Return an appropriate response, when given an invalid review_id", () => {
     return request(app)
       .get("/api/reviews/4/comments")
       .expect(200)
@@ -119,7 +120,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("No comment related");
       });
   });
-  test("", () => {
+  test("Return an appropriate response, when given a review_id that's too high", () => {
     return request(app)
       .get("/api/reviews/9999/comments")
       .expect(404)
@@ -127,22 +128,12 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("No review found");
       });
   });
-  test("", () => {
+  test("Return an appropriate response, when given an invalid review_id", () => {
     return request(app)
       .get("/api/reviews/banana/comments")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("ID must be a number");
-      });
-  });
-  test("", () => {
-    return request(app)
-      .get("/api/reviews/3/comments")
-      .expect(200)
-      .then(({ body }) => {
-        const commentsArr = body.comments;
-        expect(commentsArr.length).toBe(3);
-        expect(commentsArr).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
