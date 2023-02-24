@@ -1,12 +1,11 @@
 const express = require("express");
+const {getCategories, getReviews, getReviewById, getReviewsComments,postCommentByReviewId, patchReview} = require("./controllers/controller-game.js")
 
-const {getCategories} = require("./controllers/controller-game.js")
 const app = express();
 
 app.get("/api/categories", getCategories);
 
 
-const {getCategories, getReviews, getReviewById, postCommentByReviewId, getReviewsComments} = require("./controllers/controller-game.js")
 
 const {handle500Errors, handlePSQL400Erros, handleCustomErrors } = require("./controllers/err-controllers.js");
 
@@ -21,7 +20,7 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.post("/api/reviews/:review_id/comments", postCommentByReviewId);
 
 app.get("/api/reviews/:review_id/comments", getReviewsComments);
-
+app.patch("/api/reviews/:review_id", patchReview)
 
 
 app.use(handle500Errors);

@@ -18,6 +18,7 @@ const {
   fetchReviewById,
   postComment,
   fetchReviewsComments,
+  updateReview,
 } = require("../models/model-game.js");
 
 const getCategories = (req, res, next) => {
@@ -69,6 +70,20 @@ const getReviewsComments = (req, res, next) => {
     });
 };
 
+const patchReview = (req, res, next) => {
+  const { review_id } = req.params;
+  const  {inc_votes}  = req.body;
+  console.log(inc_votes, "inc votes")
+  updateReview(review_id, inc_votes)
+    .then((review) => {
+        console.log(review, "review")
+      res.status(200).send({ review });
+    })
+    .catch((err) => {
+      if (err) next(err);
+    });
+};
+
 module.exports = {
   getCategories,
   getReviews,
@@ -76,5 +91,6 @@ module.exports = {
   postCommentByReviewId,
 
   getReviewsComments,
+  patchReview,
 };
 
