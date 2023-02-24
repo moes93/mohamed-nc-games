@@ -49,6 +49,9 @@ const fetchReviewById = (review_id) => {
 };
 
 const postComment = (review_id, comment) => {
+    if (isNaN(Number(review_id)) === true) {
+        return Promise.reject("ID must be a number");
+      } else {
   const username = comment.username;
   const body = comment.body;
 // console.log(body)
@@ -82,6 +85,8 @@ const postComment = (review_id, comment) => {
     return result[1];
   });
 };
+};
+
 
 module.exports = {
   fetchCategories,

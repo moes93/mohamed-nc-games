@@ -13,8 +13,6 @@ const handleCustomErrors = (err, req, res, next) => {
     res.status(err.status).send(err);
   } else if (err.msg === "Username Not Found") {
     res.status(err.status).send(err);
-  } else if (err.msg === "Username Not Found") {
-    res.status(err.status).send(err);
   } else {
     next(err);
   }

@@ -127,15 +127,25 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("Username Not Found");
       });
   });
-  // test("if given an invalid Id, return an appropriate response", () => {
-  //   const postedComment = { username: "Mohamed", body: "random words" };
-  //   return request(app)
-  //     .post("/api/reviews/banana/comments")
-  //     .send(postedComment)
-  //     .expect(400)
-  //     .then(({ body }) => {
-  //       console.log(body);
-  //       expect(body.msg).toBe("ID must be a number");
-  //     });
-  // });
+  test("if given an invalid Id, return an appropriate response", () => {
+    const postedComment = { username: "Mohamed", body: "random words" };
+    return request(app)
+      .post("/api/reviews/banana/comments")
+      .send(postedComment)
+      .expect(400)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toBe("ID must be a number");
+      });
+  });
+  test("if given an invalid username, return an appropriate response", () => {
+    const postedComment = { username: "malek", body: "random words" };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(postedComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Username Not Found");
+      });
+  });
 });
