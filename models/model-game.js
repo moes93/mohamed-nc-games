@@ -76,15 +76,36 @@ const fetchReviewsComments = (review_id) => {
         } else return result.rows;
       });
 
-    return Promise.all([valid_id, comment])
-    .then((values) => {
+    return Promise.all([valid_id, comment]).then((values) => {
       return values[1];
     });
   }
 };
+
+const updateReview = (review_id, inc_votes) => {
+    if (isNaN(Number(review_id)) === true || isNaN(Number(inc_votes) ) === true) {
+        return Promise.reject("ID must be a number");
+      } else {
+    return db
+    .query(
+        `UPDATE reviews SET votes = votes + $2 WHERE review_id=$1 RETURNING *;`,
+        [review_id, inc_votes]
+    )
+    .then(({ rows }) => {
+        console.log(rows)
+        if (rows[0] === undefined) {
+            return Promise.reject({
+                status: 404,
+                msg: `No review found`,
+            });
+        } else return rows[0];
+    });
+}}
+
 module.exports = {
   fetchCategories,
   fetchReviews,
   fetchReviewById,
   fetchReviewsComments,
+  updateReview
 };

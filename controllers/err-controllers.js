@@ -25,4 +25,5 @@ const handle500Errors = (err, req, res, next) => {
   }
 };
 
+
 module.exports = { handle500Errors, handleCustomErrors, handlePSQL400Erros };
