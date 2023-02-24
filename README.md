@@ -6,3 +6,4 @@ The following database name will need t be added as shown below:
     PGDATABASE=nc_games to the .env.development file and
 
     PGDATABASE=nc_games_test to the .env.test file
+
