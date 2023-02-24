@@ -1,34 +1,8 @@
-const app = require ("../app");
 const app = require("../app");
 const request = require("supertest");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
-
-
-beforeEach(()=>{
-    return seed(data);
-});
-
-afterAll(()=>{
-    db.end();
-});
-
-describe("get api/categories",()=>{
-    test("To return a status code of 200 and with an array of objects with a key of slug and a key of description", ()=>{
-        return request(app)
-        .get("/api/categories")
-        .expect(200)
-        .then(({body})=>{
-          console.log(body.categories)
-          expect(body.categories.length).toBe(4);
-            body["categories"].forEach((catergory)=>{
-                expect(catergory).toHaveProperty("slug");
-                expect(catergory).toHaveProperty("description");
-            })
-        })
-    })
-})
 
 beforeEach(() => {
   return seed(data);
@@ -36,6 +10,21 @@ beforeEach(() => {
 
 afterAll(() => {
   db.end();
+});
+
+describe("get api/categories", () => {
+  test("To return a status code of 200 and with an array of objects with a key of slug and a key of description", () => {
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.categories.length).toBe(4);
+        body["categories"].forEach((catergory) => {
+          expect(catergory).toHaveProperty("slug");
+          expect(catergory).toHaveProperty("description");
+        });
+      });
+  });
 });
 
 describe("GET api/categories", () => {
@@ -120,7 +109,6 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-
 describe("POST /api/reviews/:review_id/comments", () => {
   test("request body accepts an object with the keys username and body and responds with all the properties and correct keys", () => {
     const postedComment = { username: "mallionaire", body: "random words" };
@@ -161,7 +149,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send(postedComment)
       .expect(400)
       .then(({ body }) => {
-        console.log(body);
         expect(body.msg).toBe("ID must be a number");
       });
   });
@@ -175,7 +162,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("Username Not Found");
       });
   });
-
+});
 describe("GET /api/reviews/:review_id", () => {
   test("A review object, which should have the following properties: review_id,title,review_body,designer,review_img_url,votes, category, owner and created_at", () => {
     return request(app)

@@ -1,16 +1,16 @@
 
-const {fetchCategories} = require("../models/model-game.js")
+// const {fetchCategories} = require("../models/model-game.js")
 
-const getCategories =(req,res,next)=>{
-    fetchCategories().then((categories)=>{
-        res.status(200).send({categories})
-    })
-    .catch((err) => {
-        next(err)
-     })
-};
+// const getCategories =(req,res,next)=>{
+//     fetchCategories().then((categories)=>{
+//         res.status(200).send({categories})
+//     })
+//     .catch((err) => {
+//         next(err)
+//      })
+// };
 
-module.exports = {getCategories}
+// module.exports = {getCategories}
 
 const {
   fetchCategories,
@@ -58,6 +58,7 @@ postComment(reviewId, comment)
 .catch((err) => {
   next(err);
 });
+}
 
 const getReviewsComments = (req, res, next) => {
   const { review_id } = req.params;
@@ -73,10 +74,8 @@ const getReviewsComments = (req, res, next) => {
 const patchReview = (req, res, next) => {
   const { review_id } = req.params;
   const  {inc_votes}  = req.body;
-  console.log(inc_votes, "inc votes")
   updateReview(review_id, inc_votes)
     .then((review) => {
-        console.log(review, "review")
       res.status(200).send({ review });
     })
     .catch((err) => {
