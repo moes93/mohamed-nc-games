@@ -19,6 +19,7 @@ const {
   postComment,
   fetchReviewsComments,
   updateReview,
+  fetchUsers
 } = require("../models/model-game.js");
 
 const getCategories = (req, res, next) => {
@@ -83,13 +84,22 @@ const patchReview = (req, res, next) => {
     });
 };
 
+const getUsers = (req, res, next) => {
+	fetchUsers().then((users) => {
+		res.status(200).send({users});
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   getCategories,
   getReviews,
   getReviewById,
   postCommentByReviewId,
-
   getReviewsComments,
   patchReview,
+  getUsers
 };
 

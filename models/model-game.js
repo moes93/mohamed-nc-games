@@ -1,12 +1,5 @@
 const db = require("../db/connection.js");
 
-// const fetchCategories = () =>{
-//     return db.query("SELECT * FROM categories").then(({rows})=>{
-//         return rows;
-//     })
-// };
-
-// module.exports = {fetchCategories};
 
 const fetchCategories = () => {
   return db.query("SELECT * FROM categories").then(({ rows }) => {
@@ -146,6 +139,12 @@ const updateReview = (review_id, inc_votes) => {
   }
 };
 
+const fetchUsers = () => {
+	return db.query("SELECT * from users").then(({ rows: users }) => {
+        return users;
+	});
+}
+
 module.exports = {
   fetchCategories,
   fetchReviews,
@@ -153,4 +152,5 @@ module.exports = {
   postComment,
   fetchReviewsComments,
   updateReview,
+  fetchUsers,
 };

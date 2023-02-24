@@ -312,3 +312,29 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  test("returns a user object with the keys:- username, avatar_url and name", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        // console.log(body.users);
+        const expected = {
+          username: "mallionaire",
+          name: "haz",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        };
+        expect(body.users[0]).toEqual(expected);
+      });
+  });
+  test("when given an invalid username, return an appropriate response", () => {
+    return request(app)
+    .get("/api/user")
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("incorrect endpoint");
+      });
+  });
+});
