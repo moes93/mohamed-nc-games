@@ -12,6 +12,7 @@ const handleCustomErrors = (err, req, res, next) => {
   if (err.msg === "No review found") {
     res.status(err.status).send(err);
   } else if (err.msg === "Username Not Found") {
+  } else if (err.msg === "No comment related") {
     res.status(err.status).send(err);
   } else {
     next(err);

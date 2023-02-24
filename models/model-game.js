@@ -88,9 +88,44 @@ const postComment = (review_id, comment) => {
 };
 
 
+const fetchReviewsComments = (review_id) => {
+  if (isNaN(Number(review_id)) === true) {
+    return Promise.reject("ID must be a number");
+  } else {
+    const valid_id = db
+      .query(`SELECT * from reviews WHERE review_id=$1`, [review_id])
+      .then((result) => {
+        if (result.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: `No review found`,
+          });
+        } else return review_id;
+      });
+    const comment = db
+      .query(
+        `SELECT * from comments WHERE review_id=$1 ORDER BY created_at DESC`,
+        [review_id]
+      )
+      .then((result) => {
+        if (result.rowCount === 0) {
+          return Promise.reject({
+            status: 200,
+            msg: `No comment related`,
+          });
+        } else return result.rows;
+      });
+
+    return Promise.all([valid_id, comment])
+    .then((values) => {
+      return values[1];
+    });
+  }
+};
 module.exports = {
   fetchCategories,
   fetchReviews,
   fetchReviewById,
   postComment,
+  fetchReviewsComments,
 };

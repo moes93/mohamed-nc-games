@@ -3,6 +3,7 @@ const {
   fetchReviews,
   fetchReviewById,
   postComment,
+  fetchReviewsComments,
 } = require("../models/model-game.js");
 
 const getCategories = (req, res, next) => {
@@ -42,6 +43,16 @@ postComment(reviewId, comment)
 .catch((err) => {
   next(err);
 });
+
+const getReviewsComments = (req, res, next) => {
+  const { review_id } = req.params;
+  fetchReviewsComments(review_id)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports = {
@@ -49,4 +60,6 @@ module.exports = {
   getReviews,
   getReviewById,
   postCommentByReviewId,
+
+  getReviewsComments,
 };
