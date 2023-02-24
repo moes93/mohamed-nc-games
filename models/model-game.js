@@ -1,5 +1,20 @@
 const db = require("../db/connection.js");
 
+
+const fetchCategories = () =>{
+    return db.query("SELECT * FROM categories").then(({rows})=>{
+        return rows;
+    })
+};
+
+
+
+
+
+
+
+module.exports = {fetchCategories};
+
 const fetchCategories = () => {
   return db.query("SELECT * FROM categories").then(({ rows }) => {
     return rows;
@@ -47,6 +62,46 @@ const fetchReviewById = (review_id) => {
       });
   }
 };
+
+const postComment = (review_id, comment) => {
+    if (isNaN(Number(review_id)) === true) {
+        return Promise.reject("ID must be a number");
+      } else {
+  const username = comment.username;
+  const body = comment.body;
+// console.log(body)
+  if (!username || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: "username or body missing",
+    });
+  }
+  const valid_username = db
+    .query(`SELECT * from comments WHERE author=$1`, [username])
+    .then(({ rows }) => {
+
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `Username Not Found`,
+        });
+      } else return rows[0];
+    });
+  const insertedComment = db
+    .query(
+      `INSERT INTO comments(review_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
+      [review_id, username, body]
+    )
+    .then(({ rows }) => {
+
+      return rows;
+    });
+  return Promise.all([valid_username, insertedComment]).then((result) => {
+    return result[1];
+  });
+};
+};
+
 
 const fetchReviewsComments = (review_id) => {
   if (isNaN(Number(review_id)) === true) {
@@ -106,6 +161,8 @@ module.exports = {
   fetchCategories,
   fetchReviews,
   fetchReviewById,
+  postComment,
   fetchReviewsComments,
   updateReview
 };
+
