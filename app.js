@@ -1,5 +1,5 @@
 const express = require("express");
-const {getCategories, getReviews, getReviewById, getReviewsComments,postCommentByReviewId, patchReview, getUsers} = require("./controllers/controller-game.js")
+const {getCategories, getReviews, getReviewById, getReviewsComments,postCommentByReviewId, patchReview, getUsers, getReviewsCategory} = require("./controllers/controller-game.js")
 
 const app = express();
 app.use(express.json())
@@ -18,7 +18,7 @@ app.post("/api/reviews/:review_id/comments", postCommentByReviewId);
 app.get("/api/reviews/:review_id/comments", getReviewsComments);
 app.patch("/api/reviews/:review_id", patchReview)
 app.get("/api/users", getUsers)
-
+app.get("/api/reviews", getReviewsCategory)
 
 app.use(handle500Errors);
 app.use(handleCustomErrors);

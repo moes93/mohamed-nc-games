@@ -1,6 +1,5 @@
 const db = require("../db/connection.js");
 
-
 const fetchCategories = () => {
   return db.query("SELECT * FROM categories").then(({ rows }) => {
     return rows;
@@ -140,10 +139,57 @@ const updateReview = (review_id, inc_votes) => {
 };
 
 const fetchUsers = () => {
-	return db.query("SELECT * from users").then(({ rows: users }) => {
-        return users;
-	});
-}
+  return db.query("SELECT * from users").then(({ rows: users }) => {
+    return users;
+  });
+};
+
+const fetchReviewsCategory = (
+  sort_by = "created_at",
+  order = "DESC",
+  category
+) => {
+  const queryValue = [];
+  const sortByProperties = [
+    "owner",
+    "title",
+    "review_id",
+    "category",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "designer",
+    "comment_count",
+  ];
+  if (!sortByProperties.includes(sort_by)) {
+    return Promise.reject({
+      status: 400,
+      msg: "invalid sort_by query",
+    });
+  }
+  if (order.toUpperCase() != "ASC" && order.toUpperCase() != "DESC") {
+    return Promise.reject({
+      status: 400,
+      msg: "invalid order input",
+    });
+  }
+  let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments 
+	ON reviews.review_id=comments.review_id `;
+  if (category !== undefined) {
+    queryValue.push(category);
+    queryStr += `WHERE reviews.category = $1 `;
+  }
+  queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
+
+  const fetchQuery = db.query(queryStr, queryValue).then(({ rows }) => {
+    return rows;
+  });
+  if (category !== undefined) {
+    const checkingCategory = validityCheck("reviews", "category", category);
+    return Promise.all([checkingCategory, fetchQuery]);
+  } else return Promise.all([fetchQuery, fetchQuery]);
+};
+
 
 module.exports = {
   fetchCategories,

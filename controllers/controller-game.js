@@ -19,7 +19,8 @@ const {
   postComment,
   fetchReviewsComments,
   updateReview,
-  fetchUsers
+  fetchUsers,
+  fetchReviewsCategory
 } = require("../models/model-game.js");
 
 const getCategories = (req, res, next) => {
@@ -93,6 +94,15 @@ const getUsers = (req, res, next) => {
     });
 };
 
+const getReviewsCategory = (req, res, next) => {
+	const { sort_by, order, category } = req.query;
+	fetchReviewsCategory(sort_by, order, category)
+		.then((reviews) => {
+			res.status(200).send({ reviews: reviews[1] });
+		})
+		.catch(next);
+};
+
 module.exports = {
   getCategories,
   getReviews,
@@ -100,6 +110,7 @@ module.exports = {
   postCommentByReviewId,
   getReviewsComments,
   patchReview,
-  getUsers
+  getUsers,
+  getReviewsCategory
 };
 
