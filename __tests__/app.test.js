@@ -47,14 +47,14 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        allReviews = body.reviews;
+        const allReviews = body.reviews.results;
         allReviews.forEach((review) => {
           expect(review).toHaveProperty("review_id", expect.any(Number));
           expect(review).toHaveProperty("title", expect.any(String));
           expect(review).toHaveProperty("designer", expect.any(String));
           expect(review).toHaveProperty("owner", expect.any(String));
           expect(review).toHaveProperty("review_img_url", expect.any(String));
-          expect(review).toHaveProperty("comment_count", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
           expect(review).toHaveProperty("category", expect.any(String));
           expect(review).toHaveProperty("created_at", expect.any(String));
           expect(review).toHaveProperty("votes", expect.any(Number));
@@ -66,9 +66,12 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        const reviewsArr = body.reviews;
-        expect(body.reviews.length).toBe(13);
-        expect(reviewsArr).toBeSortedBy("created_at", { descending: true });
+        const reviews = body.reviews;
+
+        expect(reviews.total_count).toBe(13);
+        expect(reviews.results).toBeSortedBy("created_at", {
+          descending: true,
+        });
       });
   });
 });
@@ -345,6 +348,8 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
+        const reviews = body.reviews.results;
+
         const expected = [
           "owner",
           "title",
@@ -356,7 +361,7 @@ describe("GET /api/reviews", () => {
           "designer",
           "comment_count",
         ];
-        body["reviews"].forEach((review) => {
+        reviews.forEach((review) => {
           expect(Object.keys(review)).toEqual(expect.arrayContaining(expected));
         });
       });
@@ -366,6 +371,7 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
+        const reviews = body.reviews.results;
         const expected = {
           review_id: 7,
           title: "Mollit elit qui incididunt veniam occaecat cupidatat",
@@ -374,60 +380,137 @@ describe("GET /api/reviews", () => {
           owner: "mallionaire",
           review_body:
             "Consectetur incididunt aliquip sunt officia. Magna ex nulla consectetur laboris incididunt ea non qui. Enim id eiusmod irure dolor ipsum in tempor consequat amet ullamco. Occaecat fugiat sint fugiat mollit consequat pariatur consequat non exercitation dolore. Labore occaecat in magna commodo anim enim eiusmod eu pariatur ad duis magna. Voluptate ad et dolore ullamco anim sunt do. Qui exercitation tempor in in minim ullamco fugiat ipsum. Duis irure voluptate cupidatat do id mollit veniam culpa. Velit deserunt exercitation amet laborum nostrud dolore in occaecat minim amet nostrud sunt in. Veniam ut aliqua incididunt commodo sint in anim duis id commodo voluptate sit quis.",
-            review_img_url:
-            'https://images.pexels.com/photos/776657/pexels-photo-776657.jpeg?w=700&h=700',
+          review_img_url:
+            "https://images.pexels.com/photos/776657/pexels-photo-776657.jpeg?w=700&h=700",
           created_at: "2021-01-25T11:16:54.963Z",
           votes: 9,
-          comment_count: 0,
+          comment_count: "0",
         };
-        expect(body.reviews[0]).toEqual(expected);
+        expect(reviews[0]).toEqual(expected);
       });
   });
   test("should sort by title and ascending order value", () => {
-		return request(app)
-			.get("/api/reviews?order=asc&sort_by=title")
-			.expect(200)
-			.then(({ body }) => {
-				const expected = {
-					title: "Mollit elit qui incididunt veniam occaecat cupidatat",
-				};
-				expect(body.reviews[0]).toEqual(expect.objectContaining(expected));
-			});
-	});
+    return request(app)
+      .get("/api/reviews?order=asc&sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        const reviews = body.reviews.results;
+        const expected = {
+          title: "Ultimate Werewolf",
+          designer: "Akihisa Okui",
+          owner: "bainesface",
+          review_img_url:
+            "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+          review_body: "We couldn't find the werewolf!",
+          category: "social deduction",
+          votes: 5,
+        };
+        expect(reviews[0]).toEqual(expect.objectContaining(expected));
+      });
+  });
   test("should sort the data by any valid column, with date as the default value and Descending as the default order value", () => {
-		return request(app)
-			.get("/api/reviews?sort_by=designer")
-			.expect(200)
-			.then(({ body }) => {
-				const expected = { designer: "Avery Wunzboogerz" };
-				expect(body.reviews[0]).toEqual(expect.objectContaining(expected));
-			});
-	});
-  
-  // test("when given an invalid category query, return an appropriate response", () => {
-	// 	return request(app)
-	// 		.get("/api/reviews?category=bananas")
-	// 		.expect(404)
-	// 		.then(({ body }) => {
-	// 			expect(body.msg).toBe("bananas was not found in column category");
-	// 		});
-	// });
-	// test("when given an invalid sort_by query, return an appropriate response", () => {
-	// 	return request(app)
-	// 		.get("/api/reviews?sort_by=apples")
-	// 		.expect(400)
-	// 		.then(({ body }) => {
-	// 			expect(body.msg).toBe("invalid sort_by query");
-	// 		});
-	// });
-	// test("when given an invalid sort_by query, return an appropriate response", () => {
-	// 	return request(app)
-	// 		.get("/api/reviews?order=jumbled")
-	// 		.expect(400)
-	// 		.then(({ body }) => {
-	// 			expect(body.msg).toBe("invalid order input");
-	// 		});
-	// });
+    return request(app)
+      .get("/api/reviews?sort_by=designer")
+      .expect(200)
+      .then(({ body }) => {
+        const reviewsArr = body.reviews.results;
+        expect(reviewsArr).toBeSortedBy("designer", { descending: true });
+      });
+  });
+
+  test("when given an invalid category query, return an appropriate response", () => {
+    return request(app)
+      .get("/api/reviews?category=non-existent")
+      .expect(404)
+      .then(({ body }) => {
+        const errorMessage = body.msg;
+        expect(errorMessage).toBe("Please select a valid category!");
+      });
+  });
+
+  test("when given an invalid sort_by query, return an appropriate response", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=apples")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Please select a valid sort-by option!");
+      });
+  });
 });
 
+describe("GET /api/review/:review_id/comments", () => {
+  test("Responds with an array of comments for the given review_id of which each comment should have the following properties: comment_id,votes,created_at,author,body,review_id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const expected = [
+          {
+            comment_id: 5,
+            body: "Now this is a story all about how, board games turned my life upside down",
+            review_id: 2,
+            author: "mallionaire",
+            votes: 13,
+            created_at: "2021-01-18T10:24:05.410Z",
+          },
+          {
+            comment_id: 1,
+            body: "I loved this game too!",
+            review_id: 2,
+            author: "bainesface",
+            votes: 16,
+            created_at: "2017-11-22T12:43:33.389Z",
+          },
+          {
+            comment_id: 4,
+            body: "EPIC board game!",
+            review_id: 2,
+            author: "bainesface",
+            votes: 16,
+            created_at: "2017-11-22T12:36:03.389Z",
+          },
+        ];
+        expect(body.comments).toEqual(expected);
+      });
+  });
+  test("if a valid review_id has no comments, return an appropriate response", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No comment related");
+      });
+  });
+  test("if given a review_id that's too high, return an appropriate response", () => {
+    return request(app)
+      .get("/api/reviews/1000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No review found");
+      });
+  });
+});
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Should delete the specified comment and return status 204 with no content", () => {
+    return request(app).delete("/api/comments/5").expect(204);
+  });
+  test("404: Should respond with a Not found error if passed an id that is valid but does not exist", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body }) => {
+        const errorMessage = body.msg;
+        expect(errorMessage).toBe("invalid comment id");
+      });
+  });
+  test("400: Should respond with a Bad request error if passed an id that is not a string", () => {
+    return request(app)
+      .delete("/api/comments/invalid")
+      .expect(400)
+      .then(({ body }) => {
+        const errorMessage = body.msg;
+        expect(errorMessage).toBe("Bad request");
+      });
+  });
+});

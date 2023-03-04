@@ -1,26 +1,153 @@
 const db = require("../db/connection.js");
 
+const fetchApi = () => {
+  return fs.readFile(`./endpoints.json`).then((data) => {
+    const endpoints = JSON.parse(data);
+    return { endpoints };
+  });
+};
+
 const fetchCategories = () => {
   return db.query("SELECT * FROM categories").then(({ rows }) => {
     return rows;
   });
 };
 
-const fetchReviews = () => {
-  return db
-    .query(
-      `
-    SELECT reviews.*, COUNT(comment_id) ::int AS comment_count
-    FROM reviews
-    LEFT JOIN comments ON reviews.review_id = comments.review_id
-    GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC;
+const fetchCategory = (category) => {
+  let queryString = "SELECT * FROM categories WHERE slug = $1";
+  const queryValues = [category];
 
-    `
-    )
-    .then(({ rows }) => {
-      return rows;
+  return db.query(queryString, queryValues).then(({ rows }) => {
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "Category not found" });
+    } else return rows[0];
+  });
+};
+
+// const fetchReviews = () => {
+//   return db
+//     .query(
+//       `
+//     SELECT reviews.*, COUNT(comment_id) ::int AS comment_count
+//     FROM reviews
+//     LEFT JOIN comments ON reviews.review_id = comments.review_id
+//     GROUP BY reviews.review_id
+//     ORDER BY reviews.created_at DESC;
+
+//     `
+//     )
+//     .then(({ rows }) => {
+//       return rows;
+//     });
+// };
+
+const fetchReviews = (
+  sortBy = "created_at",
+  orderBy = "DESC",
+  category,
+  limit = 10,
+  page = 1
+) => {
+  const queryValues = [];
+
+  const validOrderOptions = ["ASC", "DESC"];
+  const validSortByProperties = [
+    "owner",
+    "title",
+    "review_id",
+    "category",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "designer",
+    "comment_count",
+  ];
+
+  let queryString = `SELECT reviews.*, 
+  COUNT(comment_id) AS comment_count 
+  FROM reviews 
+  LEFT JOIN comments 
+  ON comments.review_id = reviews.review_id `;
+
+  if (category) {
+    queryString += ` WHERE reviews.category = $1 `;
+    queryValues.push(category);
+  }
+
+  queryString += `GROUP BY reviews.review_id ORDER BY `;
+
+  if (validSortByProperties.includes(sortBy)) {
+    queryString += `${sortBy} `;
+  } else {
+    return Promise.reject({
+      status: 400,
+      msg: "invalid sort_by",
     });
+  }
+  if (validOrderOptions.includes(orderBy)) {
+    queryString += `${orderBy}`;
+  } else {
+    return Promise.reject({
+      status: 400,
+      msg: "Please select a valid order-by option",
+    });
+  }
+
+  return db.query(queryString, queryValues).then(({ rows }) => {
+    const total_count = rows.length;
+
+    const offset = page * limit - limit;
+    queryValues.push(limit);
+    queryValues.push(offset);
+    if (category) {
+      queryString += ` LIMIT $2 OFFSET $3;`;
+    } else {
+      queryString += ` LIMIT $1 OFFSET $2;`;
+    }
+
+    return db.query(queryString, queryValues).then(({ rows }) => {
+      const results = rows;
+      limit = +limit;
+      page = +page;
+      let lowerRange = offset + 1;
+      let higherRange = offset + limit;
+
+      if (limit < 1) {
+        return Promise.reject({
+          status: 400,
+          msg: "Limit must be more than 0",
+        });
+      }
+
+      const remainder = total_count - (page - 1) * limit;
+
+      const accNumofPages = Math.ceil(total_count / limit);
+
+      // removed if statement to check if limit is more than TC
+
+      let range = "";
+      // make an if statement if last page or not
+      if (page === accNumofPages) {
+        //on last page
+        if (remainder === 1) {
+          range = `Showing result ${total_count} of ${total_count}`;
+        } else if (remainder > 1) {
+          range = `Showing results ${lowerRange} to ${total_count}`;
+        }
+      } else if (page > accNumofPages) {
+        // searching for non-existent pg
+        return Promise.reject({
+          status: 404,
+          msg: "Error 404 page not found!",
+        });
+      } else {
+        //on any pg other than last
+        range = `Showing results ${lowerRange} to ${higherRange}`;
+      }
+
+      return { total_count, page, range, results };
+    });
+  });
 };
 
 const fetchReviewById = (review_id) => {
@@ -144,52 +271,19 @@ const fetchUsers = () => {
   });
 };
 
-const fetchReviewsCategory = (
-  sort_by = "created_at",
-  order = "DESC",
-  category
-) => {
-  const queryValue = [];
-  const sortByProperties = [
-    "owner",
-    "title",
-    "review_id",
-    "category",
-    "review_img_url",
-    "created_at",
-    "votes",
-    "designer",
-    "comment_count",
-  ];
-  if (!sortByProperties.includes(sort_by)) {
-    return Promise.reject({
-      status: 400,
-      msg: "invalid sort_by query",
+const removeComment = (commentId) => {
+  return db
+    .query(
+      `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`,
+      [commentId]
+    )
+    .then(({ rows }) => {
+      const deletedCommentArr = rows;
+      if (!deletedCommentArr.length) {
+        return Promise.reject({ status: 404, msg: "invalid comment id" });
+      }
     });
-  }
-  if (order.toUpperCase() != "ASC" && order.toUpperCase() != "DESC") {
-    return Promise.reject({
-      status: 400,
-      msg: "invalid order input",
-    });
-  }
-  let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments 
-	ON reviews.review_id=comments.review_id `;
-  if (category !== undefined) {
-    queryValue.push(category);
-    queryStr += `WHERE reviews.category = $1 `;
-  }
-  queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
-
-  const fetchQuery = db.query(queryStr, queryValue).then(({ rows }) => {
-    return rows;
-  });
-  if (category !== undefined) {
-    const checkingCategory = validityCheck("reviews", "category", category);
-    return Promise.all([checkingCategory, fetchQuery]);
-  } else return Promise.all([fetchQuery, fetchQuery]);
 };
-
 
 module.exports = {
   fetchCategories,
@@ -199,4 +293,7 @@ module.exports = {
   fetchReviewsComments,
   updateReview,
   fetchUsers,
+  fetchCategory,
+  fetchApi,
+  removeComment,
 };
