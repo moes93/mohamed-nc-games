@@ -1,15 +1,4 @@
-// const {fetchCategories} = require("../models/model-game.js")
 
-// const getCategories =(req,res,next)=>{
-//     fetchCategories().then((categories)=>{
-//         res.status(200).send({categories})
-//     })
-//     .catch((err) => {
-//         next(err)
-//      })
-// };
-
-// module.exports = {getCategories}
 
 const {
   fetchCategories,
@@ -36,15 +25,7 @@ const getCategories = (req, res, next) => {
   });
 };
 
-// const getReviews = (req, res, next) => {
-//   fetchReviews()
-//     .then((reviews) => {
-//       res.status(200).send({ reviews });
-//     })
-//     .catch((err) => {
-//       next(err);
-//     });
-// };
+
 
 const getReviews = (request, response, next) => {
   const { sort_by, order_by, category } = request.query;

@@ -24,23 +24,6 @@ const fetchCategory = (category) => {
   });
 };
 
-// const fetchReviews = () => {
-//   return db
-//     .query(
-//       `
-//     SELECT reviews.*, COUNT(comment_id) ::int AS comment_count
-//     FROM reviews
-//     LEFT JOIN comments ON reviews.review_id = comments.review_id
-//     GROUP BY reviews.review_id
-//     ORDER BY reviews.created_at DESC;
-
-//     `
-//     )
-//     .then(({ rows }) => {
-//       return rows;
-//     });
-// };
-
 const fetchReviews = (
   sortBy = "created_at",
   orderBy = "DESC",
@@ -123,25 +106,19 @@ const fetchReviews = (
 
       const accNumofPages = Math.ceil(total_count / limit);
 
-      // removed if statement to check if limit is more than TC
-
       let range = "";
-      // make an if statement if last page or not
       if (page === accNumofPages) {
-        //on last page
         if (remainder === 1) {
           range = `Showing result ${total_count} of ${total_count}`;
         } else if (remainder > 1) {
           range = `Showing results ${lowerRange} to ${total_count}`;
         }
       } else if (page > accNumofPages) {
-        // searching for non-existent pg
         return Promise.reject({
           status: 404,
           msg: "Error 404 page not found!",
         });
       } else {
-        //on any pg other than last
         range = `Showing results ${lowerRange} to ${higherRange}`;
       }
 
@@ -273,10 +250,9 @@ const fetchUsers = () => {
 
 const removeComment = (commentId) => {
   return db
-    .query(
-      `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`,
-      [commentId]
-    )
+    .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`, [
+      commentId,
+    ])
     .then(({ rows }) => {
       const deletedCommentArr = rows;
       if (!deletedCommentArr.length) {

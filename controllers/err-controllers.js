@@ -21,15 +21,6 @@ const handlePSQL400Erros = (err, req, res, next) => {
   }
 };
 
-// const handleSQLErrors = (error, request, response, next) => {
-//   if (error.code === "22P02" || error.code === "23502") {
-//     response.status(400).send({ msg: "Bad request" });
-//   } else if (error.code === "23503") {
-//     response.status(404).send({ msg: "Not found" });
-//   } else if (error.code === "2201W") {
-//     response.status(400).send({ msg: "Limit provided is invalid" });
-//   }
-// };
 
 const handleCustomErrors = (err, req, res, next) => {
   if (err.msg === "No review found") {
