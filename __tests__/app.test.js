@@ -494,7 +494,7 @@ describe("GET /api/users/:username", () => {
   //
   it("404: should respond with 404 if username does not exist", () => {
     return request(app)
-      .get("/api/users/nayem")
+      .get("/api/users/mohamed")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("user does not exist");
@@ -586,7 +586,7 @@ describe("POST /api/reviews", () => {
       owner: "mallionaire",
       title: "New Review Title",
       review_body: "Very Fun game!",
-      designer: "Nayem",
+      designer: "Mohamed",
       category: "euro game",
       review_img_url: "myOwnUrl",
     };
@@ -600,7 +600,7 @@ describe("POST /api/reviews", () => {
         expect(review).toHaveProperty("owner", "mallionaire");
         expect(review).toHaveProperty("title", "New Review Title");
         expect(review).toHaveProperty("review_body", "Very Fun game!");
-        expect(review).toHaveProperty("designer", "Nayem");
+        expect(review).toHaveProperty("designer", "Mohamed");
         expect(review).toHaveProperty("category", "euro game");
         expect(review).toHaveProperty("review_img_url", "myOwnUrl");
         expect(review).toHaveProperty("votes", 0);
@@ -614,7 +614,7 @@ describe("POST /api/reviews", () => {
       owner: "mallionaire",
       title: "New Review Title",
       review_body: "Very Fun game!",
-      designer: "Nayem",
+      designer: "Mohamed",
       category: "euro game",
       review_img_url: "myOwnUrl",
       additionalKey: "ignore", // <------
@@ -629,7 +629,7 @@ describe("POST /api/reviews", () => {
         expect(review).toHaveProperty("owner", "mallionaire");
         expect(review).toHaveProperty("title", "New Review Title");
         expect(review).toHaveProperty("review_body", "Very Fun game!");
-        expect(review).toHaveProperty("designer", "Nayem");
+        expect(review).toHaveProperty("designer", "Mohamed");
         expect(review).toHaveProperty("category", "euro game");
         expect(review).toHaveProperty("review_img_url", "myOwnUrl");
         expect(review).toHaveProperty("votes", 0);
@@ -643,7 +643,7 @@ describe("POST /api/reviews", () => {
       owner: "mallionaire",
       title: "New Review Title",
       review_body: "Very Fun game!",
-      designer: "Nayem",
+      designer: "Mohamed",
       category: "euro game",
       // review_img_url: "myOwnUrl", <----- missing
     };
@@ -657,7 +657,7 @@ describe("POST /api/reviews", () => {
         expect(review).toHaveProperty("owner", "mallionaire");
         expect(review).toHaveProperty("title", "New Review Title");
         expect(review).toHaveProperty("review_body", "Very Fun game!");
-        expect(review).toHaveProperty("designer", "Nayem");
+        expect(review).toHaveProperty("designer", "Mohamed");
         expect(review).toHaveProperty("category", "euro game");
         expect(review).toHaveProperty("review_img_url", expect.any(String)); // <----- not "myOwnUrl"
         expect(review).toHaveProperty("votes", 0);
@@ -686,7 +686,7 @@ describe("POST /api/reviews", () => {
       owner: "Wrong User", // <----- use does not exist
       title: "New Review Title",
       review_body: "Very Fun game!",
-      designer: "Nayem",
+      designer: "Mohamed",
       category: "euro game",
       review_img_url: "myOwnUrl",
     };
