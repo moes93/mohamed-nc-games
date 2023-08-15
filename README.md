@@ -1,97 +1,97 @@
-#🎮 Northcoders House of Games API 🎲
+# 🎮 Northcoders House of Games API
 
 🕹️Greetings and a warm welcome to my Games API project 🕹️
 
 I've developed a backend service that serves as a hub for Games, delivering data and details to the frontend structure. This application can be interacted with programmatically, allowing clients/users to retrieve, submit, modify, and remove data.
 You can also access my Games API live by clicking on this link 🔗 [here](https://mohamed-nc-game-backend.onrender.com/api)
- or by copying the following url to your browser 🔗 https://mohamed-nc-game-backend.onrender.com/api, which describes all the possible end points for this API.
+ or by copying the following url to your browser https://mohamed-nc-game-backend.onrender.com/api, which describes all the possible end points for this API.
 
-To use and test this API please follow the steps below. Important Notes: You will need to have PostgreSQL v12.0 and Node.js v19.3.0 or later!
-## Accessing the databases
-
-To access the database, create two .env files for this project: '.env.test' and '.env.development'.
-The following database name will need t be added as shown below:
-
-    PGDATABASE=nc_games to the .env.development file and
-
-    PGDATABASE=nc_games_test to the .env.test file
-
-    add PGDATABASE=nc_games_test to the .env.test file
+To effectively employ and evaluate this API, kindly adhere to the instructions outlined below. It's crucial to take note that having PostgreSQL v12.0 and Node.js v19.3.0, or a later version, is a prerequisite for successful utilization.
 
 
-## Project Summary
+## 💫 Getting started
 
-This project is about creating a database regarding boardgames and interacting with the endpoints that we have regarding their reviews, comments and users.
+First you need to clone this repository to your local machine by using 🔗 `git clone https://github.com/Nayem59/Nayems-BE-NC-Games.git`
 
+Next we need to install the following dependencies by using `npm install `:
 
-## Instructions on how to use the data
+`dotenv`
 
-To fork the repo, go to my github link and click fork, after you have forked it to your device, you'll need to install the following modules:-
+`express`
 
-- Dotenv
-- Express
-- pg
-- pg-format
-  and
-- supertest
+`pg`
 
-For testing purposes, I have also used jest, jest-extended and jest-sorted.
+`pg-format`
 
-Before using the data, you'll need to setup the database by running npm run setup-dbs then npm run seed
+To test the API, I would recommend you installing the following devDependencies by using `npm install `:
 
-To run the tests to see that the database is functioning correctly, run:-
+`jest`
 
-- npm test for both files or
-- npm test utils.test.js for the utility function
-  or
-- npm test app.test.js for the app and server endpoints.
+`jest-extended`
 
+`supertest`
 
-## Minimum node version 16.x.x and psql version 14.x required
+## 🎲 Setting up Environment Variables
 
-## Adding Endpoints
+You need to connect to 2 databases locally, please add some.env files to your local project.
+The 3rd File is only necessary if you want to host and render the API online.
 
-### GET /api/categories
+1. dev File
 
-added the get /api/categories endpoint and tested it to confirm it returns the correct values
+`.env.development`
 
-### GET /api/reviews/:review_id
+This connects to your development database.
 
-added the get /api/reviews/:review_id endpoint and tested it to confirm it returns the correct values, also added tests for error handling for this endpoint
+Write this into the file: PGDATABASE=data_base_name
 
-### PATCH /api/reviews/:review_id
+2. test File
 
-added the patch /api/reviews/:review_id endpoint and tested it to confirm it returns the correct values, also added tests for error handling for this endpoint
+`.env.test`
 
-### GET /api/users
+This connects to your test database.
 
-added the get /api/users endpoint and tested it to confirm it returns the correct values
+Write this into the file: PGDATABASE=data_base_name_test
 
-### GET /api/reviews/:review_id
+3. prod File
 
-refactored the endpoint to have the result include the key 'comment_count'
+To host your database online visit this free service using this website 🔗 `https://www.elephantsql.com/` and create your instance.
 
-### GET /api/reviews
+Create this .env file:
 
-added the get /api/reviews endpoint and tested it to confirm it returns the correct values, also refactored the naming for controller and model for GET /api/reviews/:review_id to avoid confusion
+`.env.production`
 
-### GET /api/reviews/:review_id/comments
+This connects and sets up your production database.
 
-added the get /api/reviews/:review_id/comments endpoint and tested it to confirm it returns the correct values, also added tests for error handling for this endpoint
+Write this into the file and paste your instance URL: DATABASE_URL=yourInstanceURL
 
-### POST /api/reviews/:review_id/comments
+## 🎯 Setting up the database
 
-added the post /api/reviews/:review_id/comments endpoint and tested it to confirm it returns the correct values, also added tests for error handling for this endpoint
+To set up and seed your database please run the following commands:
 
-### GET /api/reviews
+`npm run setup-dbs`
 
-Refactored the get /api/reviews endpoint to include queries for sort_by, order and category. Tested the query endpoints as well as adding and testing error handling. Added a function in models to test to see whether an input is in a given column and used that to refactor the POST /api/reviews/:review_id/comments endpoint
+🌱  `npm run seed`
 
-### DELETE /api/comments/:comment_id
+## 🏃 Running tests
 
-added the delete /api/comments/:comment_id endpoint and tested it to confirm it returns the correct values, also added tests for error handling for this endpoint
+I am using `supertest` and `jest` to carry out all my tests.
 
-### GET /api
+👆 Please check the steps `Getting started` above to make sure you have installed the right devDependencies.
 
-added the get /api endpoint that returns a json object of all the endpoints and what they do
+👆 Please check the steps `Setting up Environment Variables` above to make sure you have created the right .env test file.
 
+Supertest does the database seeding automatically for us.
+
+To run the test please use the following command:
+
+`npm test app`
+
+## 🏆 Hosting and running the server
+
+To host your API and render it online you can use a free service on 🔗 `https://render.com/`. Create an new web service where you can connect your elephantsql instance database and connect your repository.
+
+Please use the following command to run your server:
+
+`npm run start`
+
+Finally you can deploy your API on render dashboard.
