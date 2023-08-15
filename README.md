@@ -1,6 +1,13 @@
-# Northcoders House of Games API
+#🎮 Northcoders House of Games API 🎲
 
+🕹️Greetings and a warm welcome to my Games API project 🕹️
+
+I've developed a backend service that serves as a hub for Games, delivering data and details to the frontend structure. This application can be interacted with programmatically, allowing clients/users to retrieve, submit, modify, and remove data.
+You can also access my Games API live by clicking on this link 🔗 [here]([https://github.com/](https://mohamed-nc-game-backend.onrender.com/api) or by copying the following url to your browser 🔗 https://mohamed-nc-game-backend.onrender.com/api, which describes all the possible end points for this API.
+
+To use and test this API please follow the steps below. Important Notes: You will need to have PostgreSQL v12.0 and Node.js v19.3.0 or later!
 ## Accessing the databases
+
 To access the database, create two .env files for this project: '.env.test' and '.env.development'.
 The following database name will need t be added as shown below:
 
